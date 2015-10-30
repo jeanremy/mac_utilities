@@ -3,6 +3,12 @@
 # Widely based on Robin PARISI's great work
 #########################################
 
+# TAF
+# Demander une version de Drupal à installer
+
+
+
+
 ###############################################################################
 #		        Coloration des echo                                   #
 ###############################################################################
@@ -145,7 +151,10 @@ display_separator
 if [ -d SITES_FOLDER/$site_name ]; then
     cecho -yellow "Le repertoire $site_name existe déjà"
 else
-    drush dl drupal --drupal-project-rename=$folder_name
+    cd $folder_name
+    mkdir public_html
+    cd public_html
+    drush dl drupal
     last_command
 fi
 
@@ -157,7 +166,6 @@ bash -c "curl http://ftp.drupal.org/files/translations/7.x/drupal/drupal-7.8.fr.
 last_command
 
 echo "Installation de Drupal  : "
-cd $folder_name
 drush site-install minimal --account-name=$drupal_user_name --account-pass=$drupal_user_password --db-url=mysql://$mysql_user_name:$mysql_user_password@127.0.0.1/$database_name --site-name=$site_name --locale="fr"
 last_command
 display_separator
@@ -216,9 +224,9 @@ display_separator
 echo "Création d'un virtual host :"
 echo "
 <VirtualHost $site_name>
-    DocumentRoot \"/Users/$USER/Sites/$folder_name\"
+    DocumentRoot \"/Users/$USER/Sites/$folder_name/public_html\"
     ServerName $site_name
-    <Directory \"/Users/$USER/Sites/$folder_name\">
+    <Directory \"/Users/$USER/Sites/$folder_name/public_html\">
         Order allow,deny
         Allow from all
         AllowOverride All
